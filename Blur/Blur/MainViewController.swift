@@ -69,7 +69,10 @@ class MainViewController: UIViewController {
     private func sliderValueChanged(_ sender: UISlider) {
         guard let blurFilter = self.blurFilter else { return }
         
-        blurFilter.setValue(sender.value * 100, forKey: kCIInputRadiusKey)
+        let formattedFloat = String(format: "%.0f", sender.value * 100)
+        self.title = "Blur - \(formattedFloat)%"
+        
+        blurFilter.setValue(sender.value * 50, forKey: kCIInputRadiusKey)
         
         guard let outputImage = blurFilter.outputImage else { return }
         
@@ -103,9 +106,13 @@ class MainViewController: UIViewController {
 extension MainViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.originalImage] as? UIImage else { assertionFailure(); return }
+        
         self._originalciImage = CIImage(image: image)?.oriented(forExifOrientation: self.imageOrientationToTiffOrientation(image.imageOrientation))
         self.blurFilter?.setValue(self._originalciImage, forKey: kCIInputImageKey)
+        
+        self.slider.setValue(0.35, animated: true)
         self.sliderValueChanged(self.slider)
+        
         self.dismiss(animated: true)
     }
 }
