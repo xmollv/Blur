@@ -32,6 +32,7 @@ class MainViewController: UIViewController {
     }()
     
     //MARK: Private properties
+    private var _originalciImage: CIImage?
     private let context = CIContext()
     private let blurFilter = CIFilter(name: "CIGaussianBlur")
     
@@ -72,7 +73,7 @@ class MainViewController: UIViewController {
         
         guard let outputImage = blurFilter.outputImage else { return }
         
-        guard  let cgImage = self.context.createCGImage(outputImage, from: outputImage.extent) else { return }
+        guard  let cgImage = self.context.createCGImage(outputImage, from: self._originalciImage?.extent ?? outputImage.extent) else { return }
         
         let processedImage = UIImage(cgImage: cgImage)
         self.imageView.image = processedImage
@@ -102,8 +103,8 @@ class MainViewController: UIViewController {
 extension MainViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.originalImage] as? UIImage else { assertionFailure(); return }
-        let ciImage = CIImage(image: image)?.oriented(forExifOrientation: self.imageOrientationToTiffOrientation(image.imageOrientation))
-        self.blurFilter?.setValue(ciImage, forKey: kCIInputImageKey)
+        self._originalciImage = CIImage(image: image)?.oriented(forExifOrientation: self.imageOrientationToTiffOrientation(image.imageOrientation))
+        self.blurFilter?.setValue(self._originalciImage, forKey: kCIInputImageKey)
         self.sliderValueChanged(self.slider)
         self.dismiss(animated: true)
     }
