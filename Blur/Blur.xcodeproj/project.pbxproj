@@ -3,13 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		471E739B21DBE19D0048D02D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 471E739A21DBE19D0048D02D /* AppDelegate.swift */; };
-		471E739D21DBE19D0048D02D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 471E739C21DBE19D0048D02D /* ViewController.swift */; };
-		471E73A021DBE19D0048D02D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 471E739E21DBE19D0048D02D /* Main.storyboard */; };
 		471E73A221DBE19E0048D02D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 471E73A121DBE19E0048D02D /* Assets.xcassets */; };
 		471E73A521DBE19E0048D02D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 471E73A321DBE19E0048D02D /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -17,8 +15,6 @@
 /* Begin PBXFileReference section */
 		471E739721DBE19D0048D02D /* Blur.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blur.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		471E739A21DBE19D0048D02D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		471E739C21DBE19D0048D02D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		471E739F21DBE19D0048D02D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		471E73A121DBE19E0048D02D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		471E73A421DBE19E0048D02D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		471E73A621DBE19E0048D02D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -55,13 +51,19 @@
 			isa = PBXGroup;
 			children = (
 				471E739A21DBE19D0048D02D /* AppDelegate.swift */,
-				471E739C21DBE19D0048D02D /* ViewController.swift */,
-				471E739E21DBE19D0048D02D /* Main.storyboard */,
+				471E73AC21DBE2590048D02D /* Resources */,
+			);
+			path = Blur;
+			sourceTree = "<group>";
+		};
+		471E73AC21DBE2590048D02D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
 				471E73A121DBE19E0048D02D /* Assets.xcassets */,
 				471E73A321DBE19E0048D02D /* LaunchScreen.storyboard */,
 				471E73A621DBE19E0048D02D /* Info.plist */,
 			);
-			path = Blur;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -100,7 +102,7 @@
 				};
 			};
 			buildConfigurationList = 471E739221DBE19D0048D02D /* Build configuration list for PBXProject "Blur" */;
-			compatibilityVersion = "Xcode 9.3";
+			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -124,7 +126,6 @@
 			files = (
 				471E73A521DBE19E0048D02D /* LaunchScreen.storyboard in Resources */,
 				471E73A221DBE19E0048D02D /* Assets.xcassets in Resources */,
-				471E73A021DBE19D0048D02D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,7 +136,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				471E739D21DBE19D0048D02D /* ViewController.swift in Sources */,
 				471E739B21DBE19D0048D02D /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -143,14 +143,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		471E739E21DBE19D0048D02D /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				471E739F21DBE19D0048D02D /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		471E73A321DBE19E0048D02D /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -213,7 +205,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -268,7 +260,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -284,7 +276,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 63PYRNNP7M;
-				INFOPLIST_FILE = Blur/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Blur/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -302,7 +294,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 63PYRNNP7M;
-				INFOPLIST_FILE = Blur/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Blur/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
