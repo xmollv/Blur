@@ -7,10 +7,12 @@
 //
 
 import UIKit
+import CoreImage
 import MobileCoreServices
 
 class MainViewController: UIViewController {
     
+    //MARK: IBOutlets
     private lazy var plusButton: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.selectUserImage))
     }()
@@ -23,8 +25,17 @@ class MainViewController: UIViewController {
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
-    private let slider = UISlider(frame: .zero)
+    private lazy var slider: UISlider = {
+        let slider = UISlider(frame: .zero)
+        slider.addTarget(self, action: #selector(self.sliderValueChanged(_:)), for: .valueChanged)
+        return slider
+    }()
     
+    //MARK: Private properties
+    private let context = CIContext()
+    private let blurFilter = CIFilter(name: "CIGaussianBlur")
+    
+    //MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Blur"
@@ -42,6 +53,7 @@ class MainViewController: UIViewController {
         self.setToolbarItems([UIBarButtonItem(customView: self.slider)], animated: false)
     }
     
+    //MARK: IBActions
     @objc
     private func selectUserImage() {
         let pickerController = UIImagePickerController()
@@ -50,6 +62,20 @@ class MainViewController: UIViewController {
         pickerController.allowsEditing = false
         pickerController.mediaTypes = [kUTTypeImage as String]
         self.present(pickerController, animated: true)
+    }
+    
+    @objc
+    private func sliderValueChanged(_ sender: UISlider) {
+        guard let blurFilter = self.blurFilter else { return }
+        
+        blurFilter.setValue(sender.value * 100, forKey: kCIInputRadiusKey)
+        
+        guard let outputImage = blurFilter.outputImage else { return }
+        
+        guard  let cgImage = self.context.createCGImage(outputImage, from: outputImage.extent) else { return }
+        
+        let processedImage = UIImage(cgImage: cgImage)
+        self.imageView.image = processedImage
     }
     
     @objc
@@ -72,10 +98,12 @@ class MainViewController: UIViewController {
 
 }
 
+//MARK: UIImagePickerControllerDelegate
 extension MainViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.originalImage] as? UIImage else { assertionFailure(); return }
-        self.imageView.image = image
+        self.blurFilter?.setValue(CIImage(image: image), forKey: kCIInputImageKey)
+        self.sliderValueChanged(self.slider)
         self.dismiss(animated: true)
     }
 }
