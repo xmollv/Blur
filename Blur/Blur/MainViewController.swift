@@ -63,6 +63,8 @@ class MainViewController: UIViewController {
     @objc
     private func selectUserImage() {
         let pickerController = UIImagePickerController()
+        pickerController.modalPresentationStyle = .popover
+        pickerController.popoverPresentationController?.barButtonItem = self.plusButton
         pickerController.delegate = self
         pickerController.sourceType = .photoLibrary
         pickerController.allowsEditing = false
@@ -98,6 +100,8 @@ class MainViewController: UIViewController {
             return
         }
         let activityViewController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        activityViewController.modalPresentationStyle = .popover
+        activityViewController.popoverPresentationController?.barButtonItem = self.shareButton
         activityViewController.excludedActivityTypes = [.addToReadingList, .assignToContact, .mail, .markupAsPDF, .openInIBooks, .postToFacebook, .postToFlickr, .postToTencentWeibo, .postToTwitter, .postToVimeo, .postToWeibo, .print]
         activityViewController.completionWithItemsHandler = { (activityType, completed, returnedItems, error) in
             guard completed, error == nil else {
