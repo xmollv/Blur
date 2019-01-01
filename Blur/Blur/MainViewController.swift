@@ -14,6 +14,9 @@ class MainViewController: UIViewController {
     private lazy var plusButton: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.selectUserImage))
     }()
+    private lazy var shareButton: UIBarButtonItem = {
+        return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(self.shareResultingImage))
+    }()
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -27,6 +30,7 @@ class MainViewController: UIViewController {
         self.title = "Blur"
         self.view.backgroundColor = .black
         self.navigationItem.leftBarButtonItem = self.plusButton
+        self.navigationItem.rightBarButtonItem = self.shareButton
         self.view.addSubview(self.imageView)
         NSLayoutConstraint.activate([
             self.imageView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
@@ -46,6 +50,24 @@ class MainViewController: UIViewController {
         pickerController.allowsEditing = false
         pickerController.mediaTypes = [kUTTypeImage as String]
         self.present(pickerController, animated: true, completion: nil)
+    }
+    
+    @objc
+    private func shareResultingImage() {
+        guard let image = self.imageView.image else {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            return
+        }
+        let activityViewController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        activityViewController.excludedActivityTypes = [.addToReadingList, .assignToContact, .mail, .markupAsPDF, .openInIBooks, .postToFacebook, .postToFlickr, .postToTencentWeibo, .postToTwitter, .postToVimeo, .postToWeibo, .print]
+        activityViewController.completionWithItemsHandler = { (activityType, completed, returnedItems, error) in
+            guard completed, error == nil else {
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+                return
+            }
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+        }
+        self.present(activityViewController, animated: true, completion: nil)
     }
 
 }
