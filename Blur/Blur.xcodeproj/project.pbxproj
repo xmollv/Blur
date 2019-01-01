@@ -10,6 +10,8 @@
 		471E739B21DBE19D0048D02D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 471E739A21DBE19D0048D02D /* AppDelegate.swift */; };
 		471E73A221DBE19E0048D02D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 471E73A121DBE19E0048D02D /* Assets.xcassets */; };
 		471E73A521DBE19E0048D02D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 471E73A321DBE19E0048D02D /* LaunchScreen.storyboard */; };
+		471E73AE21DBE2A80048D02D /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 471E73AD21DBE2A80048D02D /* MainViewController.swift */; };
+		471E73B021DBEBB40048D02D /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 471E73AF21DBEBB40048D02D /* NavigationController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -18,6 +20,8 @@
 		471E73A121DBE19E0048D02D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		471E73A421DBE19E0048D02D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		471E73A621DBE19E0048D02D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		471E73AD21DBE2A80048D02D /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		471E73AF21DBEBB40048D02D /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +55,8 @@
 			isa = PBXGroup;
 			children = (
 				471E739A21DBE19D0048D02D /* AppDelegate.swift */,
+				471E73AF21DBEBB40048D02D /* NavigationController.swift */,
+				471E73AD21DBE2A80048D02D /* MainViewController.swift */,
 				471E73AC21DBE2590048D02D /* Resources */,
 			);
 			path = Blur;
@@ -137,6 +143,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				471E739B21DBE19D0048D02D /* AppDelegate.swift in Sources */,
+				471E73B021DBEBB40048D02D /* NavigationController.swift in Sources */,
+				471E73AE21DBE2A80048D02D /* MainViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
