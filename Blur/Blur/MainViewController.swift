@@ -104,10 +104,7 @@ class MainViewController: UIViewController {
         activityViewController.popoverPresentationController?.barButtonItem = self.shareButton
         activityViewController.excludedActivityTypes = [.addToReadingList, .assignToContact, .mail, .markupAsPDF, .openInIBooks, .postToFacebook, .postToFlickr, .postToTencentWeibo, .postToTwitter, .postToVimeo, .postToWeibo, .print]
         activityViewController.completionWithItemsHandler = { (activityType, completed, returnedItems, error) in
-            guard completed, error == nil else {
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
-                return
-            }
+            guard completed, error == nil else { return }
             UINotificationFeedbackGenerator().notificationOccurred(.success)
         }
         self.present(activityViewController, animated: true)
