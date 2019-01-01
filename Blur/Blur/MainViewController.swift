@@ -49,7 +49,7 @@ class MainViewController: UIViewController {
         pickerController.sourceType = .photoLibrary
         pickerController.allowsEditing = false
         pickerController.mediaTypes = [kUTTypeImage as String]
-        self.present(pickerController, animated: true, completion: nil)
+        self.present(pickerController, animated: true)
     }
     
     @objc
@@ -67,7 +67,7 @@ class MainViewController: UIViewController {
             }
             UINotificationFeedbackGenerator().notificationOccurred(.success)
         }
-        self.present(activityViewController, animated: true, completion: nil)
+        self.present(activityViewController, animated: true)
     }
 
 }
@@ -76,6 +76,6 @@ extension MainViewController: UINavigationControllerDelegate, UIImagePickerContr
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.originalImage] as? UIImage else { assertionFailure(); return }
         self.imageView.image = image
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true)
     }
 }
