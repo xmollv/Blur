@@ -52,6 +52,11 @@ class MainViewController: UIViewController {
         ])
         
         self.setToolbarItems([UIBarButtonItem(customView: self.slider)], animated: false)
+        
+        
+        let gr = UITapGestureRecognizer(target: self, action: #selector(self.resetSliderToDefault))
+        gr.numberOfTapsRequired = 2
+        self.slider.addGestureRecognizer(gr)
     }
     
     //MARK: IBActions
@@ -67,6 +72,10 @@ class MainViewController: UIViewController {
     
     @objc
     private func sliderValueChanged(_ sender: UISlider) {
+        guard let _ = self._originalciImage else {
+            sender.setValue(0, animated: false)
+            return
+        }
         guard let blurFilter = self.blurFilter else { return }
         
         let formattedFloat = String(format: "%.0f", sender.value * 100)
@@ -98,6 +107,12 @@ class MainViewController: UIViewController {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
         }
         self.present(activityViewController, animated: true)
+    }
+    
+    @objc
+    private func resetSliderToDefault() {
+        self.slider.setValue(0.35, animated: true)
+        self.sliderValueChanged(self.slider)
     }
 
 }
