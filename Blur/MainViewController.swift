@@ -22,6 +22,7 @@ class MainViewController: UIViewController {
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.isUserInteractionEnabled = true
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
@@ -53,6 +54,9 @@ class MainViewController: UIViewController {
         
         self.setToolbarItems([UIBarButtonItem(customView: self.slider)], animated: false)
         
+        let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress(gestureReconizer:)))
+        longPressGestureRecognizer.minimumPressDuration = 0.01
+        self.imageView.addGestureRecognizer(longPressGestureRecognizer)
         
         let gr = UITapGestureRecognizer(target: self, action: #selector(self.resetSliderToDefault))
         gr.numberOfTapsRequired = 2
@@ -108,6 +112,17 @@ class MainViewController: UIViewController {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
         }
         self.present(activityViewController, animated: true)
+    }
+    
+    @objc
+    private func handleLongPress(gestureReconizer: UILongPressGestureRecognizer) {
+        if gestureReconizer.state != .ended {
+            guard let ciImage = self._originalciImage else { return }
+            self.imageView.image = UIImage(ciImage: ciImage)
+        }
+        else {
+            self.sliderValueChanged(self.slider)
+        }
     }
     
     @objc
