@@ -102,8 +102,32 @@ class MainViewController: UIViewController {
 extension MainViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.originalImage] as? UIImage else { assertionFailure(); return }
-        self.blurFilter?.setValue(CIImage(image: image), forKey: kCIInputImageKey)
+        let ciImage = CIImage(image: image)?.oriented(forExifOrientation: self.imageOrientationToTiffOrientation(image.imageOrientation))
+        self.blurFilter?.setValue(ciImage, forKey: kCIInputImageKey)
         self.sliderValueChanged(self.slider)
         self.dismiss(animated: true)
+    }
+}
+
+extension MainViewController {
+    func imageOrientationToTiffOrientation(_ value: UIImage.Orientation) -> Int32 {
+        switch (value) {
+        case .up:
+            return 1
+        case .down:
+            return 3
+        case .left:
+            return 8
+        case .right:
+            return 6
+        case .upMirrored:
+            return 2
+        case .downMirrored:
+            return 4
+        case .leftMirrored:
+            return 5
+        case .rightMirrored:
+            return 7
+        }
     }
 }
