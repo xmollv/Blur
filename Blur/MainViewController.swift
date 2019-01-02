@@ -16,8 +16,8 @@ class MainViewController: UIViewController {
     private lazy var plusButton: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.selectUserImage))
     }()
-    private lazy var shareButton: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(self.shareResultingImage))
+    private lazy var saveButton: UIBarButtonItem = {
+        return UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(self.saveResultingImage))
     }()
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
@@ -45,7 +45,7 @@ class MainViewController: UIViewController {
         self.title = "Blur"
         self.view.backgroundColor = .black
         self.navigationItem.leftBarButtonItem = self.plusButton
-        self.navigationItem.rightBarButtonItem = self.shareButton
+        self.navigationItem.rightBarButtonItem = self.saveButton
         self.view.addSubview(self.imageView)
         NSLayoutConstraint.activate([
             self.imageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
@@ -96,20 +96,31 @@ class MainViewController: UIViewController {
     }
     
     @objc
-    private func shareResultingImage() {
+    private func saveResultingImage() {
         guard let image = self.imageView.image else {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             return
         }
-        let activityViewController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-        activityViewController.modalPresentationStyle = .popover
-        activityViewController.popoverPresentationController?.barButtonItem = self.shareButton
-        activityViewController.excludedActivityTypes = [.addToReadingList, .assignToContact, .mail, .markupAsPDF, .openInIBooks, .postToFacebook, .postToFlickr, .postToTencentWeibo, .postToTwitter, .postToVimeo, .postToWeibo, .print]
-        activityViewController.completionWithItemsHandler = { (activityType, completed, returnedItems, error) in
-            guard completed, error == nil else { return }
+        UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+    }
+    
+    @objc
+    private func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            let ac = UIAlertController(title: "Save error", message: "\(error.localizedDescription). We need write access to your photos to save the image.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Settings", style: .default) { action in
+                guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                UIApplication.shared.open(url, options: [:])
+            })
+            ac.addAction(UIAlertAction(title: "Dismiss", style: .default))
+            present(ac, animated: true)
+        } else {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
+            let ac = UIAlertController(title: "Saved!", message: "Your image has been saved to your photos.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Dismiss", style: .default))
+            present(ac, animated: true)
         }
-        self.present(activityViewController, animated: true)
     }
     
     @objc
