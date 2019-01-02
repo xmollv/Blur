@@ -23,7 +23,7 @@ class MainViewController: UIViewController {
         let imageView = UIImageView(frame: .zero)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.isUserInteractionEnabled = true
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     private lazy var slider: UISlider = {
@@ -48,10 +48,10 @@ class MainViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = self.shareButton
         self.view.addSubview(self.imageView)
         NSLayoutConstraint.activate([
-            self.imageView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            self.imageView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            self.imageView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            self.imageView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+            self.imageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.imageView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            self.imageView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            self.imageView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         ])
         
         self.setToolbarItems([UIBarButtonItem(customView: self.slider)], animated: false)
