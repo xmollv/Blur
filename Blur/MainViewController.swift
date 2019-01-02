@@ -59,10 +59,6 @@ class MainViewController: UIViewController {
         let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress(gestureReconizer:)))
         longPressGestureRecognizer.minimumPressDuration = 0.01
         self.imageView.addGestureRecognizer(longPressGestureRecognizer)
-        
-        let gr = UITapGestureRecognizer(target: self, action: #selector(self.resetSliderToDefault))
-        gr.numberOfTapsRequired = 2
-        self.slider.addGestureRecognizer(gr)
     }
     
     //MARK: IBActions
@@ -125,12 +121,6 @@ class MainViewController: UIViewController {
         else {
             self.sliderValueChanged(self.slider)
         }
-    }
-    
-    @objc
-    private func resetSliderToDefault() {
-        self.slider.setValue(0.0, animated: true)
-        self.sliderValueChanged(self.slider)
     }
 
 }
