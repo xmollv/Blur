@@ -29,6 +29,8 @@ class MainViewController: UIViewController {
     private lazy var slider: UISlider = {
         let slider = UISlider(frame: .zero)
         slider.addTarget(self, action: #selector(self.sliderValueChanged(_:)), for: .valueChanged)
+        slider.minimumValue = 0.0
+        slider.maximumValue = 100.0
         return slider
     }()
     
@@ -84,10 +86,10 @@ class MainViewController: UIViewController {
         }
         guard let blurFilter = self.blurFilter else { return }
         
-        let formattedFloat = String(format: "%.0f", sender.value * 100)
+        let formattedFloat = String(format: "%.0f", sender.value)
         self.title = "Blur - \(formattedFloat)%"
         
-        blurFilter.setValue(sender.value * 50, forKey: kCIInputRadiusKey)
+        blurFilter.setValue(sender.value / 2, forKey: kCIInputRadiusKey)
         
         guard let outputImage = blurFilter.outputImage else { return }
         
@@ -127,7 +129,7 @@ class MainViewController: UIViewController {
     
     @objc
     private func resetSliderToDefault() {
-        self.slider.setValue(0.35, animated: true)
+        self.slider.setValue(0.0, animated: true)
         self.sliderValueChanged(self.slider)
     }
 
@@ -141,7 +143,6 @@ extension MainViewController: UINavigationControllerDelegate, UIImagePickerContr
         self._originalciImage = CIImage(image: image)?.oriented(forExifOrientation: self.imageOrientationToTiffOrientation(image.imageOrientation))
         self.blurFilter?.setValue(self._originalciImage, forKey: kCIInputImageKey)
         
-        self.slider.setValue(0.35, animated: true)
         self.sliderValueChanged(self.slider)
         
         self.dismiss(animated: true)
