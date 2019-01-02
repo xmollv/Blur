@@ -16,19 +16,21 @@ class MainViewController: UIViewController {
     private lazy var plusButton: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.selectUserImage))
     }()
-    private lazy var shareButton: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(self.shareResultingImage))
+    private lazy var saveButton: UIBarButtonItem = {
+        return UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(self.saveResultingImage))
     }()
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.isUserInteractionEnabled = true
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     private lazy var slider: UISlider = {
         let slider = UISlider(frame: .zero)
         slider.addTarget(self, action: #selector(self.sliderValueChanged(_:)), for: .valueChanged)
+        slider.minimumValue = 0.0
+        slider.maximumValue = 100.0
         return slider
     }()
     
@@ -43,13 +45,13 @@ class MainViewController: UIViewController {
         self.title = "Blur"
         self.view.backgroundColor = .black
         self.navigationItem.leftBarButtonItem = self.plusButton
-        self.navigationItem.rightBarButtonItem = self.shareButton
+        self.navigationItem.rightBarButtonItem = self.saveButton
         self.view.addSubview(self.imageView)
         NSLayoutConstraint.activate([
-            self.imageView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            self.imageView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            self.imageView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            self.imageView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+            self.imageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.imageView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            self.imageView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            self.imageView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         ])
         
         self.setToolbarItems([UIBarButtonItem(customView: self.slider)], animated: false)
@@ -57,10 +59,6 @@ class MainViewController: UIViewController {
         let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress(gestureReconizer:)))
         longPressGestureRecognizer.minimumPressDuration = 0.01
         self.imageView.addGestureRecognizer(longPressGestureRecognizer)
-        
-        let gr = UITapGestureRecognizer(target: self, action: #selector(self.resetSliderToDefault))
-        gr.numberOfTapsRequired = 2
-        self.slider.addGestureRecognizer(gr)
     }
     
     //MARK: IBActions
@@ -84,10 +82,10 @@ class MainViewController: UIViewController {
         }
         guard let blurFilter = self.blurFilter else { return }
         
-        let formattedFloat = String(format: "%.0f", sender.value * 100)
+        let formattedFloat = String(format: "%.0f", sender.value)
         self.title = "Blur - \(formattedFloat)%"
         
-        blurFilter.setValue(sender.value * 50, forKey: kCIInputRadiusKey)
+        blurFilter.setValue(sender.value / 2, forKey: kCIInputRadiusKey)
         
         guard let outputImage = blurFilter.outputImage else { return }
         
@@ -98,20 +96,31 @@ class MainViewController: UIViewController {
     }
     
     @objc
-    private func shareResultingImage() {
+    private func saveResultingImage() {
         guard let image = self.imageView.image else {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             return
         }
-        let activityViewController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-        activityViewController.modalPresentationStyle = .popover
-        activityViewController.popoverPresentationController?.barButtonItem = self.shareButton
-        activityViewController.excludedActivityTypes = [.addToReadingList, .assignToContact, .mail, .markupAsPDF, .openInIBooks, .postToFacebook, .postToFlickr, .postToTencentWeibo, .postToTwitter, .postToVimeo, .postToWeibo, .print]
-        activityViewController.completionWithItemsHandler = { (activityType, completed, returnedItems, error) in
-            guard completed, error == nil else { return }
+        UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+    }
+    
+    @objc
+    private func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            let ac = UIAlertController(title: "Save error", message: "\(error.localizedDescription). We need write access to your photos to save the image.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Settings", style: .default) { action in
+                guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                UIApplication.shared.open(url, options: [:])
+            })
+            ac.addAction(UIAlertAction(title: "Dismiss", style: .default))
+            present(ac, animated: true)
+        } else {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
+            let ac = UIAlertController(title: "Saved!", message: "Your image has been saved to your photos.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Dismiss", style: .default))
+            present(ac, animated: true)
         }
-        self.present(activityViewController, animated: true)
     }
     
     @objc
@@ -124,12 +133,6 @@ class MainViewController: UIViewController {
             self.sliderValueChanged(self.slider)
         }
     }
-    
-    @objc
-    private func resetSliderToDefault() {
-        self.slider.setValue(0.35, animated: true)
-        self.sliderValueChanged(self.slider)
-    }
 
 }
 
@@ -141,7 +144,6 @@ extension MainViewController: UINavigationControllerDelegate, UIImagePickerContr
         self._originalciImage = CIImage(image: image)?.oriented(forExifOrientation: self.imageOrientationToTiffOrientation(image.imageOrientation))
         self.blurFilter?.setValue(self._originalciImage, forKey: kCIInputImageKey)
         
-        self.slider.setValue(0.35, animated: true)
         self.sliderValueChanged(self.slider)
         
         self.dismiss(animated: true)

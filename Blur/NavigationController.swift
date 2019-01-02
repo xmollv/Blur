@@ -16,8 +16,11 @@ class NavigationController: UINavigationController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        let yellow = UIColor(displayP3Red: 255/255, green: 204/255, blue: 0, alpha: 1)
         self.navigationBar.barStyle = .blackTranslucent
+        self.navigationBar.tintColor = yellow
         self.isToolbarHidden = false
         self.toolbar.barStyle = .blackTranslucent
+        self.toolbar.tintColor = yellow
     }
 }
