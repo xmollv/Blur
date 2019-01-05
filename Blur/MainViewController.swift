@@ -143,7 +143,7 @@ class MainViewController: UIViewController {
         }
         
         let formattedFloat = String(format: "%.0f", sender.value)
-        let filterName = self.filterNamesAssociation.keys.first(where: { $0 == CIFilter.localizedName(forFilterName: self.selectedFilter!.name) }) ?? "Blur"
+        let filterName = self.filterNamesAssociation.keys.first(where: { $0 == CIFilter.localizedName(forFilterName: self.selectedFilter?.name ?? "") }) ?? "Blur"
         self.title = "\(filterName) - \(formattedFloat)%"
         
         self.imageView.image = self.blurrer.blur(image, amount: sender.value, filter: self.selectedFilter ?? CIFilter(name: "CIGaussianBlur"))
