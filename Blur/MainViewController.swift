@@ -7,8 +7,6 @@
 //
 
 import UIKit
-import CoreImage
-import MobileCoreServices
 
 class MainViewController: UIViewController {
     
@@ -67,9 +65,6 @@ class MainViewController: UIViewController {
         pickerController.modalPresentationStyle = .popover
         pickerController.popoverPresentationController?.barButtonItem = self.plusButton
         pickerController.delegate = self
-        pickerController.sourceType = .photoLibrary
-        pickerController.allowsEditing = false
-        pickerController.mediaTypes = [kUTTypeImage as String]
         self.present(pickerController, animated: true)
     }
     
