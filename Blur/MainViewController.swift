@@ -108,12 +108,12 @@ class MainViewController: UIViewController {
                 UIApplication.shared.open(url, options: [:])
             })
             ac.addAction(UIAlertAction(title: "Dismiss", style: .default))
-            present(ac, animated: true)
+            self.present(ac, animated: true)
         } else {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
             let ac = UIAlertController(title: "Saved!", message: "Your image has been saved to your photos.", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "Dismiss", style: .default))
-            present(ac, animated: true)
+            self.present(ac, animated: true)
         }
     }
     
@@ -122,7 +122,9 @@ class MainViewController: UIViewController {
         let ac = UIAlertController(title: "Choose filter", message: nil, preferredStyle: .actionSheet)
         self.filters.forEach({ ac.addAction(UIAlertAction(title: CIFilter.localizedName(forFilterName: $0.name), style: .default, handler: self.setFilter)) })
         ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(ac, animated: true)
+        ac.modalPresentationStyle = .popover
+        ac.popoverPresentationController?.barButtonItem = self.filterButton
+        self.present(ac, animated: true)
     }
     
     func setFilter(action: UIAlertAction) {
