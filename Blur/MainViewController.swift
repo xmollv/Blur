@@ -7,8 +7,6 @@
 //
 
 import UIKit
-import CoreImage
-import MobileCoreServices
 
 class MainViewController: UIViewController {
     
@@ -18,6 +16,9 @@ class MainViewController: UIViewController {
     }()
     private lazy var saveButton: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(self.saveResultingImage))
+    }()
+    private lazy var filterButton: UIBarButtonItem = {
+        return UIBarButtonItem(title: "Filter", style: .plain, target: self, action: #selector(self.changeFilter(_:)))
     }()
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
@@ -35,9 +36,26 @@ class MainViewController: UIViewController {
     }()
     
     //MARK: Private properties
-    private var _originalciImage: CIImage?
-    private let context = CIContext()
-    private let blurFilter = CIFilter(name: "CIGaussianBlur")
+    private var originalImage: UIImage?
+    private var selectedFilter: CIFilter?
+    private var blurrer: Blurrer = _Blurrer()
+    private let filters = [CIFilter(name: "CIGaussianBlur"),
+                           CIFilter(name: "CIPixellate"),
+                           CIFilter(name: "CIUnsharpMask"),
+                           CIFilter(name: "CIVignette"),
+                           CIFilter(name: "CIBloom"),
+                           CIFilter(name: "CIComicEffect"),
+                           CIFilter(name: "CICrystallize"),
+                           CIFilter(name: "CIGloom"),
+                           CIFilter(name: "CIPointillize")].compactMap{ $0 }
+    private lazy var filterNamesAssociation: [String: CIFilter] = {
+        var dict: [String:CIFilter] = [:]
+        self.filters.forEach {
+            guard let name = CIFilter.localizedName(forFilterName: $0.name) else { return }
+            dict[name] = $0
+        }
+        return dict
+    }()
     
     //MARK: Lifecycle
     override func viewDidLoad() {
@@ -45,7 +63,7 @@ class MainViewController: UIViewController {
         self.title = "Blur"
         self.view.backgroundColor = .black
         self.navigationItem.leftBarButtonItem = self.plusButton
-        self.navigationItem.rightBarButtonItem = self.saveButton
+        self.navigationItem.rightBarButtonItems = [self.saveButton, self.filterButton]
         self.view.addSubview(self.imageView)
         NSLayoutConstraint.activate([
             self.imageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
@@ -68,31 +86,7 @@ class MainViewController: UIViewController {
         pickerController.modalPresentationStyle = .popover
         pickerController.popoverPresentationController?.barButtonItem = self.plusButton
         pickerController.delegate = self
-        pickerController.sourceType = .photoLibrary
-        pickerController.allowsEditing = false
-        pickerController.mediaTypes = [kUTTypeImage as String]
         self.present(pickerController, animated: true)
-    }
-    
-    @objc
-    private func sliderValueChanged(_ sender: UISlider) {
-        guard let _ = self._originalciImage else {
-            sender.setValue(0, animated: false)
-            return
-        }
-        guard let blurFilter = self.blurFilter else { return }
-        
-        let formattedFloat = String(format: "%.0f", sender.value)
-        self.title = "Blur - \(formattedFloat)%"
-        
-        blurFilter.setValue(sender.value / 2, forKey: kCIInputRadiusKey)
-        
-        guard let outputImage = blurFilter.outputImage else { return }
-        
-        guard  let cgImage = self.context.createCGImage(outputImage, from: self._originalciImage?.extent ?? outputImage.extent) else { return }
-        
-        let processedImage = UIImage(cgImage: cgImage)
-        self.imageView.image = processedImage
     }
     
     @objc
@@ -124,10 +118,40 @@ class MainViewController: UIViewController {
     }
     
     @objc
+    private func changeFilter(_ sender: Any) {
+        let ac = UIAlertController(title: "Choose filter", message: nil, preferredStyle: .actionSheet)
+        self.filters.forEach({ ac.addAction(UIAlertAction(title: CIFilter.localizedName(forFilterName: $0.name), style: .default, handler: self.setFilter)) })
+        ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(ac, animated: true)
+    }
+    
+    func setFilter(action: UIAlertAction) {
+        guard let actionTitle = action.title, let filter = self.filterNamesAssociation[actionTitle] else {
+            return
+        }
+        self.selectedFilter = filter
+        self.sliderValueChanged(self.slider)
+    }
+    
+    @objc
+    private func sliderValueChanged(_ sender: UISlider) {
+        guard let image = self.originalImage else {
+            sender.setValue(0, animated: false)
+            return
+        }
+        
+        let formattedFloat = String(format: "%.0f", sender.value)
+        let filterName = self.filterNamesAssociation.keys.first(where: { $0 == CIFilter.localizedName(forFilterName: self.selectedFilter!.name) }) ?? "Blur"
+        self.title = "\(filterName) - \(formattedFloat)%"
+        
+        self.imageView.image = self.blurrer.blur(image, amount: sender.value, filter: self.selectedFilter ?? CIFilter(name: "CIGaussianBlur"))
+    }
+    
+    @objc
     private func handleLongPress(gestureReconizer: UILongPressGestureRecognizer) {
         if gestureReconizer.state != .ended {
-            guard let ciImage = self._originalciImage else { return }
-            self.imageView.image = UIImage(ciImage: ciImage)
+            guard let image = self.originalImage else { return }
+            self.imageView.image = image
         }
         else {
             self.sliderValueChanged(self.slider)
@@ -140,35 +164,8 @@ class MainViewController: UIViewController {
 extension MainViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.originalImage] as? UIImage else { assertionFailure(); return }
-        
-        self._originalciImage = CIImage(image: image)?.oriented(forExifOrientation: self.imageOrientationToTiffOrientation(image.imageOrientation))
-        self.blurFilter?.setValue(self._originalciImage, forKey: kCIInputImageKey)
-        
+        self.originalImage = image
         self.sliderValueChanged(self.slider)
-        
         self.dismiss(animated: true)
-    }
-}
-
-extension MainViewController {
-    func imageOrientationToTiffOrientation(_ value: UIImage.Orientation) -> Int32 {
-        switch (value) {
-        case .up:
-            return 1
-        case .down:
-            return 3
-        case .left:
-            return 8
-        case .right:
-            return 6
-        case .upMirrored:
-            return 2
-        case .downMirrored:
-            return 4
-        case .leftMirrored:
-            return 5
-        case .rightMirrored:
-            return 7
-        }
     }
 }

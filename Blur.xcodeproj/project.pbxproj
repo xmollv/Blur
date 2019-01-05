@@ -12,6 +12,7 @@
 		471E73A521DBE19E0048D02D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 471E73A321DBE19E0048D02D /* LaunchScreen.storyboard */; };
 		471E73AE21DBE2A80048D02D /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 471E73AD21DBE2A80048D02D /* MainViewController.swift */; };
 		471E73B021DBEBB40048D02D /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 471E73AF21DBEBB40048D02D /* NavigationController.swift */; };
+		4734A77621E0D1CD005AD79C /* Blurrer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4734A77521E0D1CD005AD79C /* Blurrer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		471E73A621DBE19E0048D02D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		471E73AD21DBE2A80048D02D /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		471E73AF21DBEBB40048D02D /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
+		4734A77521E0D1CD005AD79C /* Blurrer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Blurrer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 				471E739A21DBE19D0048D02D /* AppDelegate.swift */,
 				471E73AF21DBEBB40048D02D /* NavigationController.swift */,
 				471E73AD21DBE2A80048D02D /* MainViewController.swift */,
+				4734A77521E0D1CD005AD79C /* Blurrer.swift */,
 				471E73AC21DBE2590048D02D /* Resources */,
 			);
 			path = Blur;
@@ -144,6 +147,7 @@
 			files = (
 				471E739B21DBE19D0048D02D /* AppDelegate.swift in Sources */,
 				471E73B021DBEBB40048D02D /* NavigationController.swift in Sources */,
+				4734A77621E0D1CD005AD79C /* Blurrer.swift in Sources */,
 				471E73AE21DBE2A80048D02D /* MainViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
