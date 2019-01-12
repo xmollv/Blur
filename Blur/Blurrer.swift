@@ -11,12 +11,17 @@ import CoreImage
 import Foundation
 
 protocol Blurrer {
+    func blur(_ image: UIImage, amount: Float) -> UIImage?
     func blur(_ image: UIImage, amount: Float, filter: CIFilter?) -> UIImage?
 }
 
 final class _Blurrer: Blurrer {
     
     private let context = CIContext()
+    
+    func blur(_ image: UIImage, amount: Float) -> UIImage? {
+        return self.blur(image, amount: amount, filter: CIFilter(name: "CIGaussianBlur"))
+    }
     
     func blur(_ image: UIImage, amount: Float, filter: CIFilter?) -> UIImage? {
         
@@ -29,12 +34,8 @@ final class _Blurrer: Blurrer {
         // Set that image as the input for the filter
         filter.setValue(ciImage, forKey: kCIInputImageKey)
         
-        // Set the correct key for the amount of filter
-        let inputKeys = filter.inputKeys
-        if inputKeys.contains(kCIInputIntensityKey) { filter.setValue(amount, forKey: kCIInputIntensityKey) }
-        if inputKeys.contains(kCIInputRadiusKey) { filter.setValue(amount / 2, forKey: kCIInputRadiusKey) }
-        if inputKeys.contains(kCIInputScaleKey) { filter.setValue(amount / 1, forKey: kCIInputScaleKey) }
-        if inputKeys.contains(kCIInputCenterKey) { filter.setValue(CIVector(x: image.size.width / 2, y: image.size.height / 2), forKey: kCIInputCenterKey) }
+        // Set the correct radius for the amount of blur
+        filter.setValue(amount / 2, forKey: kCIInputRadiusKey)
         
         // Grab the output after setting the result
         guard let outputImage = filter.outputImage else { return nil }
