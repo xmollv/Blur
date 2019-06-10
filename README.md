@@ -1,3 +1,6 @@
+# ⚠️ Deprecated
+To make Apple happy I had to add crappy features to the app that didn't make sense to not be "too simple". Whatever review team. Now it's gone.
+
 # Blur
 This is a dead simple app to blur images. I got sick trying to find an app that did this on the App Store and that it wasn't full of crappy ads or it wasn't updated since iOS 6.
 
